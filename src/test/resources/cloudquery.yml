@@ -1,0 +1,28 @@
+spec:
+  registry: github
+  spec:
+    regions:
+      - us-east-1
+    custom_endpoint_url: http://127.0.0.1:4566
+    custom_endpoint_hostname_immutable: true
+    max_retries: 0
+    custom_endpoint_partition_id: aws
+    custom_endpoint_signing_region: us-east-1
+  path: cloudquery/aws
+  tables:
+    - aws_ec2_vpcs
+    - aws_ec2_security_groups
+  destinations:
+    - file
+  version: v22.14.0
+  name: aws
+kind: source
+---
+kind: destination
+spec:
+  name: "file"
+  path: "cloudquery/file"
+  version: "v3.4.7"
+  spec:
+    path: "./{{TABLE}}-{{UUID}}.{{FORMAT}}"
+    format: "json"
