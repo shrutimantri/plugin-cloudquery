@@ -24,7 +24,7 @@ sourceCompatibility = 17
 targetCompatibility = 17
 
 group "io.kestra.plugin"
-description 'Plugin template for Kestra'
+description 'CloudQuery plugin for Kestra'
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
@@ -52,9 +52,7 @@ dependencies {
 
     // kestra
     compileOnly group: "io.kestra", name: "core", version: kestraVersion
-
-    // libs included in the final jar
-    api group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+    implementation group: "io.kestra.plugin", name: "plugin-script", version: kestraVersion
 }
 
 
@@ -75,6 +73,10 @@ testlogger {
 }
 
 dependencies {
+    // lombok
+    testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+
     testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
@@ -90,6 +92,12 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-engine"
     testImplementation "org.hamcrest:hamcrest:2.2"
     testImplementation "org.hamcrest:hamcrest-library:2.2"
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.4.0'
+
+    // testcontainers
+    testImplementation "org.testcontainers:testcontainers:1.19.0"
+    testImplementation "org.testcontainers:junit-jupiter:1.19.0"
+    testImplementation "org.testcontainers:localstack:1.19.0"
 }
 
 /**********************************************************************************************************************\
@@ -110,8 +118,8 @@ jar {
     manifest {
         attributes(
                 "X-Kestra-Name": project.name,
-                "X-Kestra-Title": "Template",
-                "X-Kestra-Group": project.group + ".templates",
+                "X-Kestra-Title": "CloudQuery",
+                "X-Kestra-Group": project.group + ".cloudquery",
                 "X-Kestra-Description": project.description,
                 "X-Kestra-Version": project.version
         )
