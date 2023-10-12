@@ -33,7 +33,10 @@ class CloudQueryCLITest {
             .type(CloudQueryCLI.class.getName())
             .env(Map.of("{{ inputs.envKey }}", "{{ inputs.envValue }}"))
             .commands(List.of(
-                "--version --log-console"
+                "echo \"::{\\\"outputs\\\":{" +
+                    "\\\"customEnv\\\":\\\"$" + envKey + "\\\"" +
+                    "}}::\"",
+                "cloudquery --version --log-console"
             ))
             .build();
 
@@ -42,5 +45,7 @@ class CloudQueryCLITest {
         ScriptOutput runOutput = execute.run(runContext);
 
         assertThat(runOutput.getExitCode(), is(0));
+        assertThat(runOutput.getVars().get("customEnv"), is(envValue));
+
     }
 }

@@ -94,8 +94,8 @@ public class CloudQueryCLI extends AbstractCloudQueryCommand implements Runnable
             .withCommands(
                 ScriptService.scriptCommands(
                     List.of("/bin/sh", "-c"),
-                    List.of(""),
-                    this.commands.stream().map(cmd -> "/app/cloudquery " + cmd).toList()
+                    List.of("alias cloudquery='/app/cloudquery'"),
+                    this.commands
                 )
             )
             .withEnv(this.getEnv());
