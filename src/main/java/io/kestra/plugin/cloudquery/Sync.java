@@ -39,7 +39,7 @@ import static io.kestra.core.utils.Rethrow.throwConsumer;
 @Plugin(
     examples = {
         @Example(
-            title = "Start a CloudQuery sync based on a YAML configuration",
+            title = "Start a CloudQuery sync based on a YAML configuration.",
             full = true,
             code = """
                 id: cloudquery_sync
@@ -52,25 +52,25 @@ import static io.kestra.core.utils.Rethrow.throwConsumer;
                     configs:
                       - kind: source
                         spec:
-                        name: hackernews
-                        path: cloudquery/hackernews
-                        version: v3.0.13
-                        tables: ["*"]
-                        destinations: ["duckdb"]
-                        spec:
+                          name: hackernews
+                          path: cloudquery/hackernews
+                          version: v3.0.13
+                          tables: ["*"]
+                          destinations: ["duckdb"]
+                          spec:
                             item_concurrency: 100
                             start_time: "{{ now() | dateAdd(-1, 'DAYS') }}"
                       - kind: destination
                         spec:
-                        name: duckdb
-                        path: cloudquery/duckdb
-                        version: v4.2.10
-                        write_mode: overwrite-delete-stale
-                        spec:
+                          name: duckdb
+                          path: cloudquery/duckdb
+                          version: v4.2.10
+                          write_mode: overwrite-delete-stale
+                          spec:
                             connection_string: hn.db"""
         ),        
         @Example(
-            title = "Start a CloudQuery sync based on a file(s) input",
+            title = "Start a CloudQuery sync based on a file(s) input.",
             full = true,
             code = """
                 id: cloudquery_sync
