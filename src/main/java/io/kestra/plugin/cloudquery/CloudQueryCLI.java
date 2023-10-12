@@ -26,51 +26,54 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Execute CloudQuery commands."
+    title = "Execute CloudQuery commands from a CLI."
 )
 @Plugin(
     examples = {
         @Example(
-            title = "Migrate CloudQuery destination schemas",
-            code = {
-                "tasks:",
-                "  - id: wdir",
-                "    type: io.kestra.core.tasks.flows.WorkingDirectory",
-                "    tasks:",
-                "      - id: config",
-                "        type: io.kestra.core.tasks.storages.LocalFiles",
-                "        inputs:",
-                "          config.yml: |",
-                "            kind: source",
-                "            spec:",
-                "              name: aws",
-                "              path: cloudquery/aws",
-                "              version: \"v22.4.0\"",
-                "              tables: [\"aws_s3*\", \"aws_ec2*\", \"aws_ecs*\", \"aws_iam*\", \"aws_glue*\", \"aws_dynamodb*\"]",
-                "              destinations: [\"postgresql\"]",
-                "              spec:",
-                "            ---",
-                "            kind: destination",
-                "            spec:",
-                "              name: \"postgresql\"",
-                "              version: \"v5.0.3\"",
-                "              path: \"cloudquery/postgresql\"",
-                "              write_mode: \"overwrite-delete-stale\"",
-                "              spec:",
-                "                connection_string: ${PG_CONNECTION_STRING}",
-                "",
-                "      - id: cloudQuery",
-                "        type: io.kestra.plugin.cloudquery.CloudQueryCLI",
-                "        env:",
-                "          AWS_ACCESS_KEY_ID: \"{{ secret('AWS_ACCESS_KEY_ID') }}\"",
-                "          AWS_SECRET_ACCESS_KEY: \"{{ secret('AWS_SECRET_ACCESS_KEY') }}\"",
-                "          AWS_DEFAULT_REGION: \"{{ secret('AWS_DEFAULT_REGION') }}\"    ",
-                "          PG_CONNECTION_STRING: \"postgresql://postgres:{{secret('DB_PASSWORD')}}@host.docker.internal:5432/demo?sslmode=disable\"",
-                "        commands:",
-                "        - \"--version\"",
-                "        - migrate config.yml --log-console"
-            }
-        ),
+            title = "Run a CloudQuery sync from CLI",
+            full = true,
+            code = """
+                id: cloudquery_sync_cli
+                namespace: dev
+
+                tasks:
+                  - id: wdir
+                    type: io.kestra.core.tasks.flows.WorkingDirectory
+                    tasks:
+                      - id: config_files
+                        type: io.kestra.core.tasks.storages.LocalFiles
+                        inputs:
+                        config.yml: |
+                          kind: source
+                          spec:
+                            name: hackernews
+                            path: cloudquery/hackernews
+                            version: v3.0.13
+                            tables: ["*"]
+                            backend_options:
+                              table_name: cq_cursor
+                              connection: "@@plugins.duckdb.connection"
+                            destinations:
+                              - "duckdb"
+                            spec:
+                              item_concurrency: 100
+                              start_time: "{{ now() | dateAdd(-1, 'DAYS') }}"
+                            ---
+                            kind: destination
+                            spec:
+                              name: duckdb
+                              path: cloudquery/duckdb
+                              version: v4.2.10
+                              write_mode: overwrite-delete-stale
+                              spec:
+                                connection_string: hn.db
+
+                      - id: hn_to_duckdb
+                        type: io.kestra.plugin.cloudquery.CloudQueryCLI
+                        commands:
+                          - cloudquery sync config.yml --log-console"""
+        )
     }
 )
 public class CloudQueryCLI extends AbstractCloudQueryCommand implements RunnableTask<ScriptOutput> {

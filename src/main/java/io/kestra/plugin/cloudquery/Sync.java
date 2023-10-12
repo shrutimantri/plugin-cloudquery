@@ -39,47 +39,56 @@ import static io.kestra.core.utils.Rethrow.throwConsumer;
 @Plugin(
     examples = {
         @Example(
-            title = "Sync CloudQuery with yaml input",
-            code = {
-                "        env:",
-                "          AWS_ACCESS_KEY_ID: \"{{ secret('AWS_ACCESS_KEY_ID') }}\"",
-                "          AWS_SECRET_ACCESS_KEY: \"{{ secret('AWS_SECRET_ACCESS_KEY') }}\"",
-                "          AWS_DEFAULT_REGION: \"{{ secret('AWS_DEFAULT_REGION') }}\"    ",
-                "          PG_CONNECTION_STRING: \"postgresql://postgres:{{secret('DB_PASSWORD')}}@host.docker.internal:5432/demo?sslmode=disable\"",
-                "        configs:",
-                "           -",
-                "             kind: source",
-                "               spec:",
-                "                 name: aws",
-                "                 path: cloudquery/aws",
-                "                 version: \"v22.4.0\"",
-                "                 tables: [\"aws_s3*\", \"aws_ec2*\", \"aws_ecs*\", \"aws_iam*\", \"aws_glue*\", \"aws_dynamodb*\"]",
-                "                 destinations: [\"postgresql\"]",
-                "                 spec:",
-                "            -",
-                "              kind: destination",
-                "              spec:",
-                "                name: \"postgresql\"",
-                "                version: \"v5.0.3\"",
-                "                path: \"cloudquery/postgresql\"",
-                "                write_mode: \"overwrite-delete-stale\"",
-                "                spec:",
-                "                  connection_string: ${PG_CONNECTION_STRING}",
-            }
-        ),
+            title = "Start a CloudQuery sync based on a YAML configuration",
+            full = true,
+            code = """
+                id: cloudquery_sync
+                namespace: dev
+
+                tasks:
+                  - id: hn_to_duckdb
+                    type: io.kestra.plugin.cloudquery.Sync
+                    incremental: false
+                    configs:
+                      - kind: source
+                        spec:
+                        name: hackernews
+                        path: cloudquery/hackernews
+                        version: v3.0.13
+                        tables: ["*"]
+                        destinations: ["duckdb"]
+                        spec:
+                            item_concurrency: 100
+                            start_time: "{{ now() | dateAdd(-1, 'DAYS') }}"
+                      - kind: destination
+                        spec:
+                        name: duckdb
+                        path: cloudquery/duckdb
+                        version: v4.2.10
+                        write_mode: overwrite-delete-stale
+                        spec:
+                            connection_string: hn.db"""
+        ),        
         @Example(
-            title = "Sync CloudQuery with file input",
-            code = {
-                "        env:",
-                "          AWS_ACCESS_KEY_ID: \"{{ secret('AWS_ACCESS_KEY_ID') }}\"",
-                "          AWS_SECRET_ACCESS_KEY: \"{{ secret('AWS_SECRET_ACCESS_KEY') }}\"",
-                "          AWS_DEFAULT_REGION: \"{{ secret('AWS_DEFAULT_REGION') }}\"    ",
-                "          PG_CONNECTION_STRING: \"postgresql://postgres:{{secret('DB_PASSWORD')}}@host.docker.internal:5432/demo?sslmode=disable\"",
-                "        configs:",
-                "           - sources.yml",
-                "           - destination.yml",
-            }
-        ),
+            title = "Start a CloudQuery sync based on a file(s) input",
+            full = true,
+            code = """
+                id: cloudquery_sync
+                namespace: dev
+
+                tasks:
+                  - id: hn_to_duckdb
+                    type: io.kestra.plugin.cloudquery.Sync
+                    incremental: false
+                    env:
+                        AWS_ACCESS_KEY_ID: "{{ secret('AWS_ACCESS_KEY_ID') }}"
+                        AWS_SECRET_ACCESS_KEY: "{{ secret('AWS_SECRET_ACCESS_KEY') }}"
+                        AWS_DEFAULT_REGION: "{{ secret('AWS_DEFAULT_REGION') }}"
+                        PG_CONNECTION_STRING: "postgresql://postgres:{{ secret('DB_PASSWORD') }}@host.docker.internal:5432/demo?sslmode=disable"
+                    configs:
+                      - sources.yml
+                      - destination.yml"""
+        )
     }
 )
 public class Sync extends AbstractCloudQueryCommand implements RunnableTask<ScriptOutput> {
