@@ -68,7 +68,7 @@ import static io.kestra.core.utils.Rethrow.throwConsumer;
                           write_mode: overwrite-delete-stale
                           spec:
                             connection_string: hn.db"""
-        ),        
+        ),
         @Example(
             title = "Start a CloudQuery sync based on a file(s) input.",
             full = true,
@@ -98,11 +98,11 @@ public class Sync extends AbstractCloudQueryCommand implements RunnableTask<Scri
 
     @Schema(
         title = "CloudQuery configurations.",
-        description = "A list of CloudQuery configurations or files containing CloudQuery configurations"
+        description = "A list of CloudQuery configurations or files containing CloudQuery configurations",
+        anyOf = {String[].class, Map[].class}
     )
     @PluginProperty(
-        dynamic = false,
-        additionalProperties = String.class
+        dynamic = false
     )
     @NotNull
     private List<Object> configs;
