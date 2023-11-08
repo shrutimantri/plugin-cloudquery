@@ -6,6 +6,8 @@ import io.kestra.core.exceptions.IllegalVariableEvaluationException;
 import io.kestra.core.models.annotations.Example;
 import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.annotations.PluginProperty;
+import io.kestra.core.models.tasks.NamespaceFiles;
+import io.kestra.core.models.tasks.NamespaceFilesInterface;
 import io.kestra.core.models.tasks.RunnableTask;
 import io.kestra.core.runners.RunContext;
 import io.kestra.core.serializers.JacksonMapper;
@@ -91,7 +93,7 @@ import static io.kestra.core.utils.Rethrow.throwConsumer;
         )
     }
 )
-public class Sync extends AbstractCloudQueryCommand implements RunnableTask<ScriptOutput> {
+public class Sync extends AbstractCloudQueryCommand implements RunnableTask<ScriptOutput>, NamespaceFilesInterface {
     private static final ObjectMapper OBJECT_MAPPER = JacksonMapper.ofYaml();
     private static final String DB_FILENAME = "icrementaldb.sqlite";
     private static final String CLOUD_QUERY_STATE = "CloudQueryState";
@@ -116,13 +118,16 @@ public class Sync extends AbstractCloudQueryCommand implements RunnableTask<Scri
     @Builder.Default
     private boolean incremental = false;
 
+    private NamespaceFiles namespaceFiles;
+
     @Override
     public ScriptOutput run(RunContext runContext) throws Exception {
         CommandsWrapper commands = new CommandsWrapper(runContext)
             .withWarningOnStdErr(true)
             .withRunnerType(RunnerType.DOCKER)
             .withDockerOptions(injectDefaults(getDocker()))
-            .withEnv(this.getEnv());
+            .withEnv(this.getEnv())
+            .withNamespaceFiles(namespaceFiles);
         Path workingDirectory = commands.getWorkingDirectory();
 
         File incrementalDBFile = new File(workingDirectory + "/" + DB_FILENAME);

@@ -3,6 +3,8 @@ package io.kestra.plugin.cloudquery;
 import io.kestra.core.models.annotations.Example;
 import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.annotations.PluginProperty;
+import io.kestra.core.models.tasks.NamespaceFiles;
+import io.kestra.core.models.tasks.NamespaceFilesInterface;
 import io.kestra.core.models.tasks.RunnableTask;
 import io.kestra.core.runners.RunContext;
 import io.kestra.plugin.scripts.exec.scripts.models.DockerOptions;
@@ -76,7 +78,7 @@ import java.util.List;
         )
     }
 )
-public class CloudQueryCLI extends AbstractCloudQueryCommand implements RunnableTask<ScriptOutput> {
+public class CloudQueryCLI extends AbstractCloudQueryCommand implements RunnableTask<ScriptOutput>, NamespaceFilesInterface {
 
     @Schema(
         title = "List of CloudQuery commands to run"
@@ -84,6 +86,8 @@ public class CloudQueryCLI extends AbstractCloudQueryCommand implements Runnable
     @PluginProperty(dynamic = true)
     @NotEmpty
     protected List<String> commands;
+
+    private NamespaceFiles namespaceFiles;
 
     @Override
     public ScriptOutput run(RunContext runContext) throws Exception {
@@ -98,7 +102,8 @@ public class CloudQueryCLI extends AbstractCloudQueryCommand implements Runnable
                     this.commands
                 )
             )
-            .withEnv(this.getEnv());
+            .withEnv(this.getEnv())
+            .withNamespaceFiles(namespaceFiles);
 
         return commands.run();
     }
