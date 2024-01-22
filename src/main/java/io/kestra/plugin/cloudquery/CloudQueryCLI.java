@@ -31,7 +31,7 @@ import java.util.List;
 @Plugin(
     examples = {
         @Example(
-            title = "Run a CloudQuery sync from CLI",
+            title = "Run a CloudQuery sync from CLI.",
             full = true,
             code = """
                 id: cloudquery_sync_cli
@@ -79,7 +79,7 @@ import java.util.List;
 public class CloudQueryCLI extends AbstractCloudQueryCommand implements RunnableTask<ScriptOutput>, NamespaceFilesInterface, InputFilesInterface, OutputFilesInterface {
 
     @Schema(
-        title = "List of CloudQuery commands to run"
+        title = "List of CloudQuery commands to run."
     )
     @PluginProperty(dynamic = true)
     @NotEmpty
