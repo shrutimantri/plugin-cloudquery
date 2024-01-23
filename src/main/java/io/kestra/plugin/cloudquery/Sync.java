@@ -98,7 +98,7 @@ public class Sync extends AbstractCloudQueryCommand implements RunnableTask<Scri
 
     @Schema(
         title = "CloudQuery configurations.",
-        description = "A list of CloudQuery configurations or files containing CloudQuery configurations",
+        description = "A list of CloudQuery configurations or files containing CloudQuery configurations.",
         anyOf = {String[].class, Map[].class}
     )
     @PluginProperty(
@@ -108,8 +108,8 @@ public class Sync extends AbstractCloudQueryCommand implements RunnableTask<Scri
     private List<Object> configs;
 
     @Schema(
-        title = "Use kestra internal backend to save incremental index.",
-        description = "Kestra can automatically add a backend option to your sources and same incremental indexes in the internal storage." +
+        title = "Whether to use Kestra's internal backend to save incremental index.",
+        description = "Kestra can automatically add a backend option to your sources and same incremental indexes in the internal storage. " +
             "Use this boolean to activate this option."
     )
     @PluginProperty

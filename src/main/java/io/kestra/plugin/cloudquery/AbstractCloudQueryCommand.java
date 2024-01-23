@@ -27,7 +27,7 @@ abstract class AbstractCloudQueryCommand extends Task {
     protected Map<String, String> env;
 
     @Schema(
-        title = "Docker options",
+        title = "Docker options for the `DOCKER` runner.",
         defaultValue = "{image=" + DEFAULT_IMAGE + ", pullPolicy=ALWAYS}"
     )
     @PluginProperty
