@@ -39,7 +39,7 @@ import static io.kestra.core.utils.Rethrow.throwConsumer;
 @Plugin(
     examples = {
         @Example(
-            title = "Start a CloudQuery sync based on a YAML configuration.",
+            title = "Start a CloudQuery sync based on a YAML configuration. Additionally, you can [generate an API key](https://docs.cloudquery.io/docs/deployment/generate-api-key) to use premium plugins. You can add the API key as an environment variable called `CLOUDQUERY_API_KEY`.",
             full = true,
             code = """
                 id: cloudquery_sync
@@ -48,6 +48,8 @@ import static io.kestra.core.utils.Rethrow.throwConsumer;
                 tasks:
                   - id: hn_to_duckdb
                     type: io.kestra.plugin.cloudquery.Sync
+                    env:
+                      CLOUDQUERY_API_KEY: "{{ secret('CLOUDQUERY_API_KEY') }}"
                     incremental: false
                     configs:
                       - kind: source
@@ -84,6 +86,7 @@ import static io.kestra.core.utils.Rethrow.throwConsumer;
                         AWS_ACCESS_KEY_ID: "{{ secret('AWS_ACCESS_KEY_ID') }}"
                         AWS_SECRET_ACCESS_KEY: "{{ secret('AWS_SECRET_ACCESS_KEY') }}"
                         AWS_DEFAULT_REGION: "{{ secret('AWS_DEFAULT_REGION') }}"
+                        CLOUDQUERY_API_KEY: "{{ secret('CLOUDQUERY_API_KEY') }}"
                         PG_CONNECTION_STRING: "postgresql://postgres:{{ secret('DB_PASSWORD') }}@host.docker.internal:5432/demo?sslmode=disable"
                     configs:
                       - sources.yml
