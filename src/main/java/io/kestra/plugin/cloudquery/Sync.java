@@ -39,7 +39,7 @@ import static io.kestra.core.utils.Rethrow.throwConsumer;
 @Plugin(
     examples = {
         @Example(
-            title = "Start a CloudQuery sync based on a YAML configuration. Additionally, you can [generate an API key](https://docs.cloudquery.io/docs/deployment/generate-api-key) to use premium plugins. You can add the API key as an environment variable called `CLOUDQUERY_API_KEY`.",
+            title = "Start a CloudQuery sync based on a YAML configuration. You need an [API key](https://docs.cloudquery.io/docs/deployment/generate-api-key) to download plugins. You can add the API key as an environment variable called `CLOUDQUERY_API_KEY`.",
             full = true,
             code = """
                 id: cloudquery_sync

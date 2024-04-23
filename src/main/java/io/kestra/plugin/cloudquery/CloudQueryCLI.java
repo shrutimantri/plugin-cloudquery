@@ -31,7 +31,8 @@ import java.util.List;
 @Plugin(
     examples = {
         @Example(
-            title = "Run a CloudQuery sync from CLI.",
+            title = "Run a CloudQuery sync from CLI. You need an [API key](https://docs.cloudquery.io/docs/deployment/generate-api-key) to download plugins. You can add the API key as an environment variable called `CLOUDQUERY_API_KEY`.",
+
             full = true,
             code = """
                 id: cloudquery_sync_cli
@@ -71,6 +72,8 @@ import java.util.List;
 
                       - id: hn_to_duckdb
                         type: io.kestra.plugin.cloudquery.CloudQueryCLI
+                        env:
+                          CLOUDQUERY_API_KEY: "{{ secret('CLOUDQUERY_API_KEY') }}"
                         commands:
                           - cloudquery sync config.yml --log-console"""
         )
