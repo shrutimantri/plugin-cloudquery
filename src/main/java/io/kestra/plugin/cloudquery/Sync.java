@@ -200,7 +200,7 @@ public class Sync extends AbstractCloudQueryCommand implements RunnableTask<Scri
             Map<String, Object> result;
             if (config instanceof String) {
                 URI from = new URI(runContext.render((String) config));
-                try (BufferedReader inputStream = new BufferedReader(new InputStreamReader(runContext.uriToInputStream(from)))) {
+                try (BufferedReader inputStream = new BufferedReader(new InputStreamReader(runContext.storage().getFile(from)))) {
                     result = OBJECT_MAPPER.readValue(inputStream, new TypeReference<>() {
                     });
                 }
