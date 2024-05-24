@@ -40,10 +40,10 @@ import java.util.List;
 
                 tasks:
                   - id: wdir
-                    type: io.kestra.core.tasks.flows.WorkingDirectory
+                    type: io.kestra.plugin.core.flow.WorkingDirectory
                     tasks:
                       - id: config_files
-                        type: io.kestra.core.tasks.storages.LocalFiles
+                        type: io.kestra.plugin.core.storage.LocalFiles
                         inputs:
                         config.yml: |
                           kind: source
