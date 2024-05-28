@@ -41,9 +41,6 @@ dependencies {
     annotationProcessor group: "io.kestra", name: "processor", version: kestraVersion
     compileOnly group: "io.kestra", name: "core", version: kestraVersion
     compileOnly group: "io.kestra", name: "script", version: kestraVersion
-
-    compileOnly group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.21'
-    compileOnly group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.2'
 }
 
 
