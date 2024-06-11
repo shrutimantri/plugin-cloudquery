@@ -37,45 +37,38 @@ import java.util.List;
             code = """
                 id: cloudquery_sync_cli
                 namespace: dev
-
                 tasks:
-                  - id: wdir
-                    type: io.kestra.plugin.core.flow.WorkingDirectory
-                    tasks:
-                      - id: config_files
-                        type: io.kestra.plugin.core.storage.LocalFiles
-                        inputs:
-                        config.yml: |
-                          kind: source
+                  - id: hn_to_duckdb
+                    type: io.kestra.plugin.cloudquery.CloudQueryCLI
+                    env:
+                      CLOUDQUERY_API_KEY: "{{ secret('CLOUDQUERY_API_KEY') }}"
+                    inputFiles:
+                      config.yml: |
+                        kind: source
+                        spec:
+                          name: hackernews
+                          path: cloudquery/hackernews
+                          version: v3.0.13
+                          tables: ["*"]
+                          backend_options:
+                            table_name: cq_cursor
+                            connection: "@@plugins.duckdb.connection"
+                          destinations:
+                            - "duckdb"
                           spec:
-                            name: hackernews
-                            path: cloudquery/hackernews
-                            version: v3.0.13
-                            tables: ["*"]
-                            backend_options:
-                              table_name: cq_cursor
-                              connection: "@@plugins.duckdb.connection"
-                            destinations:
-                              - "duckdb"
+                            item_concurrency: 100
+                            start_time: "{{ now() | dateAdd(-1, 'DAYS') }}"
+                          ---
+                          kind: destination
+                          spec:
+                            name: duckdb
+                            path: cloudquery/duckdb
+                            version: v4.2.10
+                            write_mode: overwrite-delete-stale
                             spec:
-                              item_concurrency: 100
-                              start_time: "{{ now() | dateAdd(-1, 'DAYS') }}"
-                            ---
-                            kind: destination
-                            spec:
-                              name: duckdb
-                              path: cloudquery/duckdb
-                              version: v4.2.10
-                              write_mode: overwrite-delete-stale
-                              spec:
-                                connection_string: hn.db
-
-                      - id: hn_to_duckdb
-                        type: io.kestra.plugin.cloudquery.CloudQueryCLI
-                        env:
-                          CLOUDQUERY_API_KEY: "{{ secret('CLOUDQUERY_API_KEY') }}"
-                        commands:
-                          - cloudquery sync config.yml --log-console"""
+                              connection_string: hn.db
+                    commands:
+                      - cloudquery sync config.yml --log-console"""
         )
     }
 )
