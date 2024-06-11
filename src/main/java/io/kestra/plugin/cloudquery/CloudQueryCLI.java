@@ -37,6 +37,7 @@ import java.util.List;
             code = """
                 id: cloudquery_sync_cli
                 namespace: dev
+
                 tasks:
                   - id: hn_to_duckdb
                     type: io.kestra.plugin.cloudquery.CloudQueryCLI
