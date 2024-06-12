@@ -141,7 +141,7 @@ public class Sync extends AbstractCloudQueryCommand implements RunnableTask<Scri
         File incrementalDBFile = new File(workingDirectory + "/" + DB_FILENAME);
 
         try {
-            InputStream taskCacheFile = runContext.getTaskStateFile(CLOUD_QUERY_STATE, DB_FILENAME);
+            InputStream taskCacheFile = runContext.storage().getTaskStateFile(CLOUD_QUERY_STATE, DB_FILENAME);
             Files.copy(taskCacheFile, incrementalDBFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (FileNotFoundException exception) {
             if (!incrementalDBFile.createNewFile()) {
@@ -168,7 +168,7 @@ public class Sync extends AbstractCloudQueryCommand implements RunnableTask<Scri
         );
 
         ScriptOutput run = commands.run();
-        runContext.putTaskStateFile(incrementalDBFile, CLOUD_QUERY_STATE, DB_FILENAME);
+        runContext.storage().putTaskStateFile(incrementalDBFile, CLOUD_QUERY_STATE, DB_FILENAME);
         return run;
     }
 
