@@ -36,7 +36,7 @@ import java.util.List;
             full = true,
             code = """
                 id: cloudquery_sync_cli
-                namespace: dev
+                namespace: company.team
 
                 tasks:
                   - id: hn_to_duckdb

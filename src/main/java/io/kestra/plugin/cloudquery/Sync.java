@@ -43,7 +43,7 @@ import static io.kestra.core.utils.Rethrow.throwConsumer;
             full = true,
             code = """
                 id: cloudquery_sync
-                namespace: dev
+                namespace: company.team
 
                 tasks:
                   - id: hn_to_duckdb
@@ -76,7 +76,7 @@ import static io.kestra.core.utils.Rethrow.throwConsumer;
             full = true,
             code = """
                 id: cloudquery_sync
-                namespace: dev
+                namespace: company.team
 
                 tasks:
                   - id: hn_to_duckdb
